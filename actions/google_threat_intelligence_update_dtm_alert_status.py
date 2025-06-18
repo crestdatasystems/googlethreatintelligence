@@ -13,12 +13,12 @@
 # either express or implied. See the License for the specific language governing permissions
 # and limitations under the License.
 
+from urllib.parse import urlencode
+
 import phantom.app as phantom
 
 import google_threat_intelligence_consts as consts
-
 from actions import BaseAction
-from urllib.parse import urlencode
 
 
 class UpdateDtmAlertStatus(BaseAction):
@@ -58,9 +58,7 @@ class UpdateDtmAlertStatus(BaseAction):
             bool: True if validation is successful, False otherwise
         """
         if self._param.get("tags"):
-            ret_val, value = self._connector.validator.validate_list(
-                self._action_result, self._param.get("tags"), "tags"
-            )
+            ret_val, value = self._connector.validator.validate_list(self._action_result, self._param.get("tags"), "tags")
 
             if not ret_val:
                 return ret_val
@@ -98,7 +96,7 @@ class UpdateDtmAlertStatus(BaseAction):
         }
 
         if param:
-            args["endpoint"] = f'{args["endpoint"]}?{urlencode(param)}'
+            args["endpoint"] = f"{args['endpoint']}?{urlencode(param)}"
 
         if body:
             args["json"] = body

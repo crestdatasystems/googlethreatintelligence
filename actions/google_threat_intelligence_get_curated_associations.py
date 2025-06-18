@@ -13,12 +13,12 @@
 # either express or implied. See the License for the specific language governing permissions
 # and limitations under the License.
 
+from urllib.parse import urlencode
+
 import phantom.app as phantom
 
 import google_threat_intelligence_consts as consts
-
 from actions import BaseAction
-from urllib.parse import urlencode
 
 
 class GetCuratedAssociations(BaseAction):
@@ -42,9 +42,7 @@ class GetCuratedAssociations(BaseAction):
         password = self._param.get("password")
         entity_type = self._connector.util.get_data_type(entity)
 
-        self._connector.debug_print(
-            f"Running action {self._connector.get_action_identifier()} with {entity} and entity type {entity_type}."
-        )
+        self._connector.debug_print(f"Running action {self._connector.get_action_identifier()} with {entity} and entity type {entity_type}.")
 
         if entity_type == consts.IP_ADDRESS or entity_type == consts.DOMAIN:
             endpoint, method = (
@@ -98,26 +96,14 @@ class GetCuratedAssociations(BaseAction):
             None
         """
         for relationship in ["malware_families", "related_threat_actors", "campaigns", "reports"]:
-
             # Paginate if cursor exists
-            if (
-                response.get("data", {})
-                .get("relationships", {})
-                .get(relationship, {})
-                .get("meta", {})
-                .get("cursor", "")
-            ):
-
+            if response.get("data", {}).get("relationships", {}).get(relationship, {}).get("meta", {}).get("cursor", ""):
                 # Get query params for particular relationship
                 query_params = self.__get_query_params(name=relationship)
 
                 # Fetch all the relationships via pagination
-                endpoint = consts.GET_RELATIONSHIP_ENDPOINT.format(
-                    entity_type=entity_type, entity=entity, relationship=relationship
-                )
-                ret_val, response_relationships = self.__make_rest_call(
-                    url=endpoint, method=method, param=query_params, pagination=True
-                )
+                endpoint = consts.GET_RELATIONSHIP_ENDPOINT.format(entity_type=entity_type, entity=entity, relationship=relationship)
+                ret_val, response_relationships = self.__make_rest_call(url=endpoint, method=method, param=query_params, pagination=True)
 
                 if phantom.is_fail(ret_val):
                     return self._action_result.get_status()
@@ -137,25 +123,15 @@ class GetCuratedAssociations(BaseAction):
         """
         all_relationships = {
             "malware_families": (
-                "name,id,collection_type,description,origin,"
-                "source_regions_hierarchy,targeted_industries_tree,"
-                "targeted_regions_hierarchy"
+                "name,id,collection_type,description,origin,source_regions_hierarchy,targeted_industries_tree,targeted_regions_hierarchy"
             ),
             "related_threat_actors": (
-                "name,id,collection_type,description,origin,"
-                "source_regions_hierarchy,targeted_industries_tree,"
-                "targeted_regions_hierarchy"
+                "name,id,collection_type,description,origin,source_regions_hierarchy,targeted_industries_tree,targeted_regions_hierarchy"
             ),
             "campaigns": (
-                "name,id,collection_type,description,origin,"
-                "source_regions_hierarchy,targeted_industries_tree,"
-                "targeted_regions_hierarchy"
+                "name,id,collection_type,description,origin,source_regions_hierarchy,targeted_industries_tree,targeted_regions_hierarchy"
             ),
-            "reports": (
-                "name,id,collection_type,origin,"
-                "source_regions_hierarchy,targeted_industries_tree,"
-                "targeted_regions_hierarchy"
-            ),
+            "reports": ("name,id,collection_type,origin,source_regions_hierarchy,targeted_industries_tree,targeted_regions_hierarchy"),
         }
 
         if name:

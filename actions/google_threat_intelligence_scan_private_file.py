@@ -13,11 +13,13 @@
 # either express or implied. See the License for the specific language governing permissions
 # and limitations under the License.
 
+from urllib.parse import urlencode
+
 import phantom.app as phantom
 import phantom.rules as ph_rules
+
 import google_threat_intelligence_consts as consts
 from actions import BaseAction
-from urllib.parse import urlencode
 
 
 class ScanPrivateFile(BaseAction):
@@ -46,7 +48,6 @@ class ScanPrivateFile(BaseAction):
             return self._action_result.get_status()
 
         if file_id:
-
             # Get report from the id
             endpoint, method = (
                 consts.PRIVATE_FILE_REPUTATION_ENDPOINT.format(id=file_id),
@@ -212,7 +213,7 @@ class ScanPrivateFile(BaseAction):
             "disable_sandbox": "disable_sandbox",
             "enable_internet": "enable_internet",
             "intercept_tls": "intercept_tls",
-            "password": "password",
+            "password": "password",  # pragma: allowlist secret
             "retention_period_days": "retention_period_days",
             "storage_region": "storage_region",
             "interaction_sandbox": "interaction_sandbox",
@@ -262,7 +263,7 @@ class ScanPrivateFile(BaseAction):
         }
 
         if param:
-            args["endpoint"] = f'{args["endpoint"]}?{urlencode(param)}'
+            args["endpoint"] = f"{args['endpoint']}?{urlencode(param)}"
         if files:
             args["files"] = files
         if body:
@@ -289,9 +290,7 @@ class ScanPrivateFile(BaseAction):
         else:
             last_analysis_date = response.get("data").get("attributes").get("last_analysis_date")
             if last_analysis_date:
-                response["data"]["attributes"]["last_analysis_date"] = self._connector.util.convert_unix_to_utc(
-                    last_analysis_date
-                )
+                response["data"]["attributes"]["last_analysis_date"] = self._connector.util.convert_unix_to_utc(last_analysis_date)
             self._action_result.add_data(response)
 
         return self._action_result.set_status(

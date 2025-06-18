@@ -13,12 +13,12 @@
 # either express or implied. See the License for the specific language governing permissions
 # and limitations under the License.
 
+from urllib.parse import urlencode
+
 import phantom.app as phantom
 
 import google_threat_intelligence_consts as consts
-
 from actions import BaseAction
-from urllib.parse import urlencode
 
 
 class GetPassiveDnsData(BaseAction):
@@ -40,9 +40,7 @@ class GetPassiveDnsData(BaseAction):
         entity = self._param["entity"]
         entity_type = self._connector.util.get_data_type(entity)
 
-        self._connector.debug_print(
-            f"Running action {self._connector.get_action_identifier()} with {entity} and entity type {entity_type}."
-        )
+        self._connector.debug_print(f"Running action {self._connector.get_action_identifier()} with {entity} and entity type {entity_type}.")
 
         if entity_type == consts.IP_ADDRESS or entity_type == consts.DOMAIN:
             endpoint, method = (
@@ -79,7 +77,7 @@ class GetPassiveDnsData(BaseAction):
         }
 
         if param:
-            args["endpoint"] = f'{args["endpoint"]}?{urlencode(param)}'
+            args["endpoint"] = f"{args['endpoint']}?{urlencode(param)}"
 
         if body:
             args["json"] = body

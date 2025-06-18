@@ -13,20 +13,21 @@
 # either express or implied. See the License for the specific language governing permissions
 # and limitations under the License.
 
+import base64
+import ipaddress
 import json
 import re
 import time
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta, timezone
+from urllib.parse import urlencode, urlparse, urlunparse
+
 import phantom.app as phantom
 import phantom.rules as ph_rules
-from phantom.utils import config as ph_config
 import requests
 from bs4 import BeautifulSoup
-from urllib.parse import urlparse, urlunparse, urlencode
+from phantom.utils import config as ph_config
 
 import google_threat_intelligence_consts as consts
-import base64
-import ipaddress
 
 
 class RetVal(tuple):
@@ -37,7 +38,7 @@ class RetVal(tuple):
         return tuple.__new__(RetVal, (val1, val2))
 
 
-class GoogleThreatIntelligenceUtils(object):
+class GoogleThreatIntelligenceUtils:
     """This class holds all the util methods."""
 
     def __init__(self, connector=None):
@@ -66,7 +67,7 @@ class GoogleThreatIntelligenceUtils(object):
                 elif len(e.args) == 1:
                     error_msg = e.args[0]
         except Exception as e:
-            self._connector.error_print(f"Error occurred while fetching exception information. Details: {str(e)}")
+            self._connector.error_print(f"Error occurred while fetching exception information. Details: {e!s}")
 
         if not error_code:
             error_text = f"Error message: {error_msg}"
@@ -140,7 +141,7 @@ class GoogleThreatIntelligenceUtils(object):
             return RetVal(
                 action_result.set_status(
                     phantom.APP_ERROR,
-                    f"Unable to parse JSON response. Error: {str(e)}",
+                    f"Unable to parse JSON response. Error: {e!s}",
                 ),
                 None,
             )
@@ -212,15 +213,12 @@ class GoogleThreatIntelligenceUtils(object):
 
         # everything else is actually an error at this point
         message = (
-            f"Can't process response from server. Status Code: {r.status_code} "
-            f"Data from server: {r.text.replace('{', '{{').replace('}', '}}')}"
+            f"Can't process response from server. Status Code: {r.status_code} Data from server: {r.text.replace('{', '{{').replace('}', '}}')}"
         )
 
         return RetVal(action_result.set_status(phantom.APP_ERROR, message), None)
 
-    def make_rest_call(
-        self, endpoint, action_result, method="get", large_file=False, return_response_headers=False, **kwargs
-    ):
+    def make_rest_call(self, endpoint, action_result, method="get", large_file=False, return_response_headers=False, **kwargs):
         """
         Make a REST call to the API.
 
@@ -263,7 +261,7 @@ class GoogleThreatIntelligenceUtils(object):
             return RetVal(
                 action_result.set_status(
                     phantom.APP_ERROR,
-                    f"Error Connecting to server. Details: {str(e)}",
+                    f"Error Connecting to server. Details: {e!s}",
                 ),
                 resp_json,
             )
@@ -312,9 +310,7 @@ class GoogleThreatIntelligenceUtils(object):
 
             while remaining > 0:
                 batch_size = min(remaining, 40)
-                updated_endpoint = (
-                    f"{endpoint}?limit={batch_size}" if "?" not in endpoint else f"{endpoint}&limit={batch_size}"
-                )
+                updated_endpoint = f"{endpoint}?limit={batch_size}" if "?" not in endpoint else f"{endpoint}&limit={batch_size}"
 
                 if cursor:
                     updated_endpoint += f"&cursor={cursor}"
@@ -364,9 +360,7 @@ class GoogleThreatIntelligenceUtils(object):
             return phantom.APP_SUCCESS, results
 
         else:
-            self._connector.debug_print(
-                f"The limit for DTM alerts ({limit}) is greater than the page size ({page_size})."
-            )
+            self._connector.debug_print(f"The limit for DTM alerts ({limit}) is greater than the page size ({page_size}).")
             next_page_token = None
             remaining = limit
             while remaining > 0:
@@ -376,9 +370,7 @@ class GoogleThreatIntelligenceUtils(object):
                     updated = parsed._replace(query=new_query)
                     updated_endpoint = urlunparse(updated)
                 else:
-                    updated_endpoint = (
-                        f"{endpoint}?size={page_size}" if "?" not in endpoint else f"{endpoint}&size={page_size}"
-                    )
+                    updated_endpoint = f"{endpoint}?size={page_size}" if "?" not in endpoint else f"{endpoint}&size={page_size}"
                 (ret_val, json_resp), response_headers = self.make_rest_call(
                     updated_endpoint, action_result, method, return_response_headers=True, **kwargs
                 )
@@ -389,15 +381,11 @@ class GoogleThreatIntelligenceUtils(object):
                 alerts_list = json_resp.get("alerts", [])
                 alert_count = len(alerts_list)
                 if remaining <= alert_count:
-                    self._connector.debug_print(
-                        f"Remaining alerts ({remaining}) are less than or equal to the alert count ({alert_count})."
-                    )
+                    self._connector.debug_print(f"Remaining alerts ({remaining}) are less than or equal to the alert count ({alert_count}).")
                     results.extend(json_resp.get("alerts")[:remaining])
                     break
 
-                self._connector.debug_print(
-                    f"Remaining alerts ({remaining}) are greater than the alert count ({alert_count})."
-                )
+                self._connector.debug_print(f"Remaining alerts ({remaining}) are greater than the alert count ({alert_count}).")
                 results.extend(json_resp.get("alerts"))
                 remaining -= alert_count
 
@@ -493,7 +481,7 @@ class GoogleThreatIntelligenceUtils(object):
         def _format_value(input_body, body, path=()):
             for key, value in input_body.items():
                 if isinstance(value, dict):
-                    body[key] = _format_value(value, {}, path + (key,))
+                    body[key] = _format_value(value, {}, (*path, key))
                 else:
                     _handle_template_value(key, value, body)
             return body
@@ -516,9 +504,7 @@ class GoogleThreatIntelligenceUtils(object):
             ipaddress.ip_address(entity)
             return consts.IP_ADDRESS
         except Exception:
-            domain_regex = re.compile(
-                r"^(?=.{1,253}$)(?!://)([a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$"
-            )
+            domain_regex = re.compile(r"^(?=.{1,253}$)(?!://)([a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$")
             if phantom.is_url(entity):
                 return consts.URL
             elif bool(domain_regex.match(entity)):
@@ -540,9 +526,7 @@ class GoogleThreatIntelligenceUtils(object):
         try:
             analysis_id = scan_result.get("data", {}).get("id")
             if not analysis_id:
-                return action_result.set_status(
-                    phantom.APP_ERROR, f"Analysis ID not found in response: {scan_result}"
-                ), None
+                return action_result.set_status(phantom.APP_ERROR, f"Analysis ID not found in response: {scan_result}"), None
         except Exception:
             return (
                 action_result.set_status(phantom.APP_ERROR, "Error occurred while extracting 'id'"),
@@ -825,9 +809,7 @@ class GoogleThreatIntelligenceUtils(object):
         """
         target_time = datetime.now(timezone.utc) - timedelta(days=days, hours=hours)
         value = target_time.strftime("%Y-%m-%dT%H:%M:%SZ")
-        self._connector.debug_print(
-            f"last_seen_after value {days} days, {hours} hours before the current UTC time: {value}"
-        )
+        self._connector.debug_print(f"last_seen_after value {days} days, {hours} hours before the current UTC time: {value}")
         return value
 
     def clean_search_string(self, search_string):
@@ -861,7 +843,7 @@ class GoogleThreatIntelligenceUtils(object):
 
         # Step 3: Normalize spacing
         cleaned = re.sub(r"\s+", " ", cleaned).strip()
-        self._connector.debug_print("cleaned: {}".format(cleaned))
+        self._connector.debug_print(f"Cleaned search string for ASM: {cleaned}")
         return cleaned
 
     def _common_message_handler_for_soar(self, response, operation):
@@ -943,8 +925,7 @@ class GoogleThreatIntelligenceUtils(object):
             dict: A dictionary containing the artifact IDs as keys and the corresponding IDs as values.
             Returns an empty dictionary if no artifact is found.
         """
-        url = consts.SPLUNK_SOAR_GET_CONTAINER_ARTIFACT_ENDPOINT.format(url=self._connector.get_phantom_base_url(),
-                                                                        container_id=container_id)
+        url = consts.SPLUNK_SOAR_GET_CONTAINER_ARTIFACT_ENDPOINT.format(url=self._connector.get_phantom_base_url(), container_id=container_id)
         artifact_ids = {}
         try:
             r = requests.get(url, verify=ph_config.platform_strict_tls)
@@ -958,8 +939,7 @@ class GoogleThreatIntelligenceUtils(object):
             self._connector.debug_print("No artifact matched")
             return artifact_ids
         try:
-            artifact_ids.update({artifact.get("source_data_identifier"): artifact.get("id") for artifact in
-                                 resp_json.get("data", [])})
+            artifact_ids.update({artifact.get("source_data_identifier"): artifact.get("id") for artifact in resp_json.get("data", [])})
             self._connector.debug_print(f"Artifact ids updated: {artifact_ids}")
         except Exception as e:
             self._connector.debug_print("Artifact results are not proper: ", e)
@@ -977,8 +957,7 @@ class GoogleThreatIntelligenceUtils(object):
         Returns:
             None
         """
-        url = consts.SPLUNK_SOAR_ARTIFACT_ENDPOINT.format(url=self._connector.get_phantom_base_url(),
-                                                          artifact_id=artifact_id)
+        url = consts.SPLUNK_SOAR_ARTIFACT_ENDPOINT.format(url=self._connector.get_phantom_base_url(), artifact_id=artifact_id)
         self._connector.debug_print(f"Updating artifact with id {artifact_id}")
         try:
             resp = requests.post(url, json=artifact, verify=ph_config.platform_strict_tls)
@@ -989,7 +968,6 @@ class GoogleThreatIntelligenceUtils(object):
 
 
 class Validator:
-
     @staticmethod
     def validate_integer(action_result, parameter, key, allow_zero=False, allow_negative=False):
         """

@@ -28,17 +28,14 @@ from google_threat_intelligence_utils import GoogleThreatIntelligenceUtils, Vali
 
 
 class RetVal(tuple):
-
     def __new__(cls, val1, val2=None):
         return tuple.__new__(RetVal, (val1, val2))
 
 
 class GoogleThreatIntelligenceConnector(BaseConnector):
-
     def __init__(self):
-
         # Call the BaseConnectors init first
-        super(GoogleThreatIntelligenceConnector, self).__init__()
+        super().__init__()
 
         self._state = None
         self.util = None
@@ -138,7 +135,6 @@ def main():  # pragma: no cover
     verify = args.verify
 
     if username is not None and password is None:
-
         # User specified a username but not a password, so ask
         import getpass
 

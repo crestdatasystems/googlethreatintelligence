@@ -13,12 +13,12 @@
 # either express or implied. See the License for the specific language governing permissions
 # and limitations under the License.
 
+from urllib.parse import urlencode
+
 import phantom.app as phantom
 
 import google_threat_intelligence_consts as consts
-
 from actions import BaseAction
-from urllib.parse import urlencode
 
 
 class ScanPrivateUrl(BaseAction):
@@ -52,9 +52,7 @@ class ScanPrivateUrl(BaseAction):
             return self._action_result.get_status()
 
         # Get private analysis id from the private_scan_result
-        ret_val, private_analysis_id = self._connector.util._get_id_from_scan_entity(
-            self._action_result, private_scan_result
-        )
+        ret_val, private_analysis_id = self._connector.util._get_id_from_scan_entity(self._action_result, private_scan_result)
 
         if phantom.is_fail(ret_val):
             return self._action_result.get_status()
@@ -69,7 +67,6 @@ class ScanPrivateUrl(BaseAction):
 
         # Check if the analysis is completed
         if analysis_status:
-
             # Get id from the private_analysis
             endpoint, method = (
                 f"{consts.GET_A_PRIVATE_URL_REPORT_ENDPOINT.format(url_id=url_id)}",
@@ -192,7 +189,7 @@ class ScanPrivateUrl(BaseAction):
         }
 
         if param:
-            args["endpoint"] = f'{args["endpoint"]}?{urlencode(param)}'
+            args["endpoint"] = f"{args['endpoint']}?{urlencode(param)}"
 
         if body:
             args["data"] = body

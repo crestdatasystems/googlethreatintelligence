@@ -15,18 +15,15 @@
 -->
 {% extends 'widgets/widget_template.html' %}
 {% load custom_template %}
-
 {% block custom_title_prop %}
   {% if title_logo %}
     style="background-size: auto 60%; background-position: 50%;
     background-repeat: no-repeat; background-image: url('/app_resource/{{ title_logo }}');"
   {% endif %}
 {% endblock %}
-
 {% block title1 %}{{ title1 }}{% endblock %}
 {% block title2 %}{{ title2 }}{% endblock %}
 {% block custom_tools %}{% endblock %}
-
 {% block widget_content %}
   <!-- Inline CSS to expand widget height and allow scrolling -->
   <style>
@@ -43,9 +40,7 @@
     }
     .ipview h3 { margin-top: 16px; }
   </style>
-
   <div class="curated_threat_intelligence" style="padding:10px;">
-
     <!-- Campaigns -->
     <h3>Campaigns</h3>
     {% if relationships.campaigns %}
@@ -76,7 +71,6 @@
     {% else %}
       <div>No campaigns found</div>
     {% endif %}
-
     <!-- Malware Families -->
     <h3>Malware Families</h3>
     {% if relationships.malware_families %}
@@ -109,7 +103,6 @@
     {% else %}
       <div>No malware families found</div>
     {% endif %}
-
     <!-- Related Threat Actors -->
     <h3>Related Threat Actors</h3>
     {% if relationships.related_threat_actors %}
@@ -140,7 +133,6 @@
     {% else %}
       <div>No related threat actors found</div>
     {% endif %}
-
     <!-- Reports -->
     <h3>Reports</h3>
     {% if relationships.reports %}
@@ -171,9 +163,7 @@
     {% else %}
       <div>No reports found</div>
     {% endif %}
-
   </div>
-
   <script>
     // Enhance tables with pagination/search
     $.extend(true, $.fn.dataTable.defaults, {

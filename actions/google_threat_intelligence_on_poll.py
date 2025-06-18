@@ -13,14 +13,15 @@
 # either express or implied. See the License for the specific language governing permissions
 # and limitations under the License.
 
+import time
+from datetime import datetime, timedelta, timezone
+from urllib.parse import quote, urlencode
+
 import phantom.app as phantom
 import phantom.rules as phantom_rules
-import google_threat_intelligence_consts as consts
 
+import google_threat_intelligence_consts as consts
 from actions import BaseAction
-from urllib.parse import urlencode, quote
-from datetime import datetime, timezone, timedelta
-import time
 
 
 class OnPoll(BaseAction):
@@ -216,7 +217,6 @@ class OnPoll(BaseAction):
 
         # Process each file in the response
         for notification in reversed(data):
-
             # Determine which container to use based on notification date
             container_id = current_container_id  # Default to current day
 
@@ -224,15 +224,13 @@ class OnPoll(BaseAction):
             if notification_timestamp and previous_day_container_id:
                 try:
                     # Convert timestamp to date string in YYYY-MM-DD format
-                    notification_date_str = datetime.fromtimestamp(notification_timestamp, tz=timezone.utc).strftime(
-                        "%Y-%m-%d"
-                    )
+                    notification_date_str = datetime.fromtimestamp(notification_timestamp, tz=timezone.utc).strftime("%Y-%m-%d")
 
                     # If notification is from previous day and we have a previous day container, use it
                     if notification_date_str == previous_day:
                         container_id = previous_day_container_id
                 except (ValueError, TypeError, OverflowError) as e:
-                    self._connector.debug_print(f"Error converting timestamp {notification_timestamp}: {str(e)}")
+                    self._connector.debug_print(f"Error converting timestamp {notification_timestamp}: {e!s}")
                     # If error, use current day container
 
             notification = self._convert_all_date_fields_to_utc(notification)
@@ -246,27 +244,20 @@ class OnPoll(BaseAction):
                 else:
                     previous_day_count += 1
             else:
-                self._connector.debug_print(
-                    f"Failed to create artifact for notification: {notification.get('id', 'unknown')}"
-                )
+                self._connector.debug_print(f"Failed to create artifact for notification: {notification.get('id', 'unknown')}")
 
         # Log creation counts
         if current_day_count > 0:
-            self._connector.debug_print(
-                f"Created {current_day_count} artifacts in container for current day {current_day}"
-            )
+            self._connector.debug_print(f"Created {current_day_count} artifacts in container for current day {current_day}")
 
         if previous_day_count > 0:
-            self._connector.debug_print(
-                f"Created {previous_day_count} artifacts in container for previous day {previous_day}"
-            )
+            self._connector.debug_print(f"Created {previous_day_count} artifacts in container for previous day {previous_day}")
 
         # Get the notification date from the first object for checkpointing
         if not self._is_poll_now and data and len(data) > 0:
             first_object = data[0]
             notification_date = first_object.get("context_attributes", {}).get("notification_date")
             if notification_date:
-
                 self._state["last_notification_date"] = notification_date
                 self._connector.state = self._state
                 self._connector.save_state(self._state)
@@ -280,7 +271,6 @@ class OnPoll(BaseAction):
         return phantom.APP_SUCCESS, None
 
     def handle_polling_ASM_events(self):
-
         days = self.config.get("days")
         limit = self.config.get("limit")
         search_string = self.config.get("search_string", "")
@@ -309,7 +299,7 @@ class OnPoll(BaseAction):
             last_seen_after_value = self._connector.util.build_last_seen_after(hours=1)
             search_string = f"{search_string_formatted} last_seen_after:{last_seen_after_value}"
 
-        self._connector.debug_print("[on_poll] search_string: {}".format(search_string))
+        self._connector.debug_print(f"[on_poll] search_string: {search_string}")
 
         params = {"page_size": limit}
 
@@ -372,7 +362,6 @@ class OnPoll(BaseAction):
             first_object = hits[-1]
             last_seen_after_timestamp = first_object.get("last_seen")
             if last_seen_after_timestamp:
-
                 # Store the last_seen_after value instate file
                 self._state["last_seen_after"] = last_seen_after_timestamp
                 self._connector.state = self._state
@@ -407,7 +396,6 @@ class OnPoll(BaseAction):
 
         # Check if this is a manual poll or scheduled poll
         if not self._is_poll_now:
-
             last_alert_time = self._state.get("last_alert_time")
 
             # Check if checkpoint is available
@@ -750,9 +738,7 @@ class OnPoll(BaseAction):
             self._param["container_count"] = value
 
         if "artifact_count" in self._param:
-            ret_val, value = self._connector.validator.validate_integer(
-                self._action_result, self._param.get("artifact_count"), "artifact_count"
-            )
+            ret_val, value = self._connector.validator.validate_integer(self._action_result, self._param.get("artifact_count"), "artifact_count")
 
             if not ret_val:
                 return ret_val
@@ -760,9 +746,7 @@ class OnPoll(BaseAction):
             self._param["artifact_count"] = value
 
         if "limit" in self.config:
-            ret_val, value = self._connector.validator.validate_integer(
-                self._action_result, self.config.get("limit"), "limit"
-            )
+            ret_val, value = self._connector.validator.validate_integer(self._action_result, self.config.get("limit"), "limit")
 
             if not ret_val or (value <= 0 and value > 1000):
                 self._connector.debug_print(
@@ -777,9 +761,7 @@ class OnPoll(BaseAction):
             self.config["limit"] = 1000
 
         if "days" in self.config:
-            ret_val, value = self._connector.validator.validate_integer(
-                self._action_result, self.config.get("days"), "days"
-            )
+            ret_val, value = self._connector.validator.validate_integer(self._action_result, self.config.get("days"), "days")
 
             if not ret_val or (value <= 0 and value > 5):
                 self._connector.debug_print(
@@ -849,9 +831,7 @@ class OnPoll(BaseAction):
         for gti_param, soar_param in query_params.items():
             if soar_param in config:
                 if isinstance(config[soar_param], str) and "," in config[soar_param]:
-                    self._connector.debug_print(
-                        f"Found comma in DTM parameter '{soar_param}', value: '{config[soar_param]}'"
-                    )
+                    self._connector.debug_print(f"Found comma in DTM parameter '{soar_param}', value: '{config[soar_param]}'")
                     self._connector.debug_print("Converting comma-separated string to list for parameter")
                     payload[gti_param] = [x.strip() for x in config[soar_param].split(",")]
                 else:
@@ -873,7 +853,7 @@ class OnPoll(BaseAction):
         }
 
         if param:
-            args["endpoint"] = f'{args["endpoint"]}?{urlencode(param, doseq=True)}'
+            args["endpoint"] = f"{args['endpoint']}?{urlencode(param, doseq=True)}"
             self._connector.debug_print(f"Calling {args['endpoint']},")
 
         if body:
@@ -897,9 +877,7 @@ class OnPoll(BaseAction):
             int: The number of duplicate items. Returns 0 if the API call fails.
         """
         query_params = {}
-        query_params["filter"] = query_params["filter"] = (
-            f"{query_params.get('filter', '')} date:{last_notification_date}".strip()
-        )
+        query_params["filter"] = query_params["filter"] = f"{query_params.get('filter', '')} date:{last_notification_date}".strip()
 
         endpoint, method = consts.IOC_ON_POLL_ENDPOINT, "get"
 

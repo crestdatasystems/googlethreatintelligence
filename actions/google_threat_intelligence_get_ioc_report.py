@@ -13,11 +13,12 @@
 # either express or implied. See the License for the specific language governing permissions
 # and limitations under the License.
 
-import phantom.app as phantom
-import google_threat_intelligence_consts as consts
-
-from actions import BaseAction
 from urllib.parse import urlencode
+
+import phantom.app as phantom
+
+import google_threat_intelligence_consts as consts
+from actions import BaseAction
 
 
 class GetIocReport(BaseAction):
@@ -39,9 +40,7 @@ class GetIocReport(BaseAction):
         password = self._param.get("password")
         entity_type = self._connector.util.get_data_type(entity)
 
-        self._connector.debug_print(
-            f"Running action {self._connector.get_action_identifier()} with {entity} and entity type {entity_type}."
-        )
+        self._connector.debug_print(f"Running action {self._connector.get_action_identifier()} with {entity} and entity type {entity_type}.")
 
         if entity_type == consts.IP_ADDRESS or entity_type == consts.DOMAIN:
             endpoint, method = (
@@ -95,7 +94,7 @@ class GetIocReport(BaseAction):
         }
 
         if param:
-            args["endpoint"] = f'{args["endpoint"]}?{urlencode(param)}'
+            args["endpoint"] = f"{args['endpoint']}?{urlencode(param)}"
 
         if body:
             args["data"] = body
@@ -124,9 +123,7 @@ class GetIocReport(BaseAction):
             last_analysis_stats = response.get("data").get("attributes").get("last_analysis_stats")
             tags = response.get("data").get("attributes").get("tags")
             if last_analysis_date:
-                response["data"]["attributes"]["last_analysis_date"] = self._connector.util.convert_unix_to_utc(
-                    last_analysis_date
-                )
+                response["data"]["attributes"]["last_analysis_date"] = self._connector.util.convert_unix_to_utc(last_analysis_date)
             if last_analysis_stats:
                 response["data"]["attributes"]["last_analysis_stats_string"] = ", ".join(
                     f"{key}:{value}" for key, value in last_analysis_stats.items()

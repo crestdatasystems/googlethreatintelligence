@@ -13,6 +13,7 @@
 # either express or implied. See the License for the specific language governing permissions
 # and limitations under the License.
 
+
 def display_curated_threat_intelligence(provides, all_app_runs, context):
     """
     Display Curated Threat Intelligence
@@ -67,12 +68,8 @@ def display_curated_threat_intelligence(provides, all_app_runs, context):
                         return ",".join([item[key] for item in items if item.get(key)])
 
                     source_regions = extract_comma_separated(attrs.get("source_regions_hierarchy", []), "country_iso2")
-                    targeted_regions = extract_comma_separated(
-                        attrs.get("targeted_regions_hierarchy", []), "country_iso2"
-                    )
-                    targeted_industries = extract_comma_separated(
-                        attrs.get("targeted_industries_tree", []), "industry_group"
-                    )
+                    targeted_regions = extract_comma_separated(attrs.get("targeted_regions_hierarchy", []), "country_iso2")
+                    targeted_industries = extract_comma_separated(attrs.get("targeted_industries_tree", []), "industry_group")
 
                     item.update(
                         {
@@ -91,9 +88,7 @@ def display_curated_threat_intelligence(provides, all_app_runs, context):
 
             context["relationships"]["campaigns"] = parse_relationship("campaigns", want_desc=True)
             context["relationships"]["malware_families"] = parse_relationship("malware_families", want_desc=True)
-            context["relationships"]["related_threat_actors"] = parse_relationship(
-                "related_threat_actors", want_desc=True
-            )
+            context["relationships"]["related_threat_actors"] = parse_relationship("related_threat_actors", want_desc=True)
             context["relationships"]["reports"] = parse_relationship("reports")
 
     #  Render the template with the above context

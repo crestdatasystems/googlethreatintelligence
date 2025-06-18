@@ -13,12 +13,12 @@
 # either express or implied. See the License for the specific language governing permissions
 # and limitations under the License.
 
+from urllib.parse import urlencode
+
 import phantom.app as phantom
 
 import google_threat_intelligence_consts as consts
-
 from actions import BaseAction
-from urllib.parse import urlencode
 
 
 class DeleteComment(BaseAction):
@@ -66,7 +66,7 @@ class DeleteComment(BaseAction):
         }
 
         if param:
-            args["endpoint"] = f'{args["endpoint"]}?{urlencode(param)}'
+            args["endpoint"] = f"{args['endpoint']}?{urlencode(param)}"
 
         if body:
             args["json"] = body

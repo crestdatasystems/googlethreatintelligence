@@ -7842,13 +7842,6 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.parameter.cursor",
-                    "data_type": "string",
-                    "example_values": [
-                        "null"
-                    ]
-                },
-                {
                     "data_path": "action_result.parameter.entity",
                     "data_type": "string",
                     "contains": [
@@ -8053,13 +8046,6 @@
                     "example_values": [
                         "success",
                         "failed"
-                    ]
-                },
-                {
-                    "data_path": "action_result.parameter.cursor",
-                    "data_type": "string",
-                    "example_values": [
-                        "null"
                     ]
                 },
                 {
@@ -10636,41 +10622,6 @@
                 {
                     "data_path": "action_result.parameter.password",
                     "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.parameter.relationship_attributes[campaigns]",
-                    "data_type": "string",
-                    "example_values": [
-                        "name,id,origin,collection_type,description,targeted_regions,targeted_industries,sponsor_region"
-                    ]
-                },
-                {
-                    "data_path": "action_result.parameter.relationship_attributes[malware_families]",
-                    "data_type": "string",
-                    "example_values": [
-                        "name,id,origin,collection_type,description,targeted_regions,targeted_industries,sponsor_region"
-                    ]
-                },
-                {
-                    "data_path": "action_result.parameter.relationship_attributes[related_threat_actors]",
-                    "data_type": "string",
-                    "example_values": [
-                        "name,id,origin,collection_type,description,targeted_regions,targeted_industries,sponsor_region"
-                    ]
-                },
-                {
-                    "data_path": "action_result.parameter.relationship_attributes[reports]",
-                    "data_type": "string",
-                    "example_values": [
-                        "name,id,collection_type,origin,source_regions_hierarchy,targeted_industries_tree,targeted_regions_hierarchy"
-                    ]
-                },
-                {
-                    "data_path": "action_result.parameter.relationships",
-                    "data_type": "string",
-                    "example_values": [
-                        "malware_families,related_threat_actors,campaigns"
-                    ]
                 },
                 {
                     "data_path": "action_result.data",
@@ -17536,7 +17487,9 @@
                 {
                     "data_path": "action_result.data.*.data.attributes.whois",
                     "data_type": "string",
-                    "example_values": ["Dummy Whois"]
+                    "example_values": [
+                        "Dummy Whois"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.data.attributes.whois_date",

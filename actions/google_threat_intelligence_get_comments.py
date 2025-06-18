@@ -13,11 +13,12 @@
 # either express or implied. See the License for the specific language governing permissions
 # and limitations under the License.
 
-import phantom.app as phantom
-import google_threat_intelligence_consts as consts
-
-from actions import BaseAction
 from urllib.parse import urlencode
+
+import phantom.app as phantom
+
+import google_threat_intelligence_consts as consts
+from actions import BaseAction
 
 
 class GetComments(BaseAction):
@@ -44,9 +45,7 @@ class GetComments(BaseAction):
         limit = self._param.get("limit")
         entity_type = self._connector.util.get_data_type(entity)
 
-        self._connector.debug_print(
-            f"Running action {self._connector.get_action_identifier()} with {entity} and entity type {entity_type}."
-        )
+        self._connector.debug_print(f"Running action {self._connector.get_action_identifier()} with {entity} and entity type {entity_type}.")
 
         if entity_type == consts.IP_ADDRESS or entity_type == consts.DOMAIN:
             endpoint, method = (
@@ -91,9 +90,7 @@ class GetComments(BaseAction):
             bool: True if validation is successful, False otherwise
         """
         if "limit" in self._param:
-            ret_val, value = self._connector.validator.validate_integer(
-                self._action_result, self._param.get("limit"), "limit"
-            )
+            ret_val, value = self._connector.validator.validate_integer(self._action_result, self._param.get("limit"), "limit")
 
             if not ret_val:
                 return ret_val
@@ -125,7 +122,7 @@ class GetComments(BaseAction):
         }
 
         if param:
-            args["endpoint"] = f'{args["endpoint"]}?{urlencode(param)}'
+            args["endpoint"] = f"{args['endpoint']}?{urlencode(param)}"
 
         if body:
             args["json"] = body

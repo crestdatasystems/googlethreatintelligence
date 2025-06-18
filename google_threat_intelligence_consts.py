@@ -41,9 +41,7 @@ ERROR_INVALID_JSON_PARAM = "Please provide a valid JSON value for the '{key}' pa
 ERROR_INVALID_LIST_PARAM = "Please provide a valid list value for the '{key}' parameter"
 ERROR_INVALID_BOOL_PARAM = "Please provide a valid boolean value for the '{key}' parameter"
 ERROR_MISSING_REQUIRED_PARAM = "'{key}' is required parameter"
-ERROR_INVALID_INT_RANGE = (
-    "Please provide a valid integer value in the '{key}' parameter between {min_value} and {max_value}"
-)
+ERROR_INVALID_INT_RANGE = "Please provide a valid integer value in the '{key}' parameter between {min_value} and {max_value}"
 INGESTION_START_MESSAGE = "Ingesting the data"
 CONTAINER_ERROR_MESSAGE = "Error occurred while saving the container: ID {}: {}"
 ARTIFACT_ERROR_MESSAGE = "Error occurred while saving the artifact(s): {}"
