@@ -33,8 +33,7 @@
                 "IOC Stream",
                 "DTM Alerts",
                 "ASM Issues"
-            ],
-            "required": false
+            ]
         },
         "days": {
             "description": "Lookback Days: Number of days of historical data to retrieve (max: 5) (Applicable for all three ingestion types)",
@@ -144,7 +143,7 @@
                     "order": 0,
                     "data_type": "string",
                     "contains": [
-                        "vault_id",
+                        "vault id",
                         "sha1",
                         "sha256"
                     ],
@@ -249,7 +248,7 @@
                         "null"
                     ],
                     "contains": [
-                        "vault_id",
+                        "vault id",
                         "sha1",
                         "sha256"
                     ]
@@ -590,7 +589,7 @@
                         "bb74a0f57512307536fc0345a5f6f6844aa7dd29"
                     ],
                     "contains": [
-                        "vault_id",
+                        "vault id",
                         "sha1"
                     ],
                     "column_name": "SHA1",
@@ -798,7 +797,7 @@
                     "order": 0,
                     "data_type": "string",
                     "contains": [
-                        "vault_id",
+                        "vault id",
                         "sha1",
                         "sha256",
                         "md5",
@@ -831,7 +830,7 @@
                     "data_path": "action_result.parameter.entity",
                     "data_type": "string",
                     "contains": [
-                        "vault_id",
+                        "vault id",
                         "sha1",
                         "sha256",
                         "md5",
@@ -7533,7 +7532,7 @@
                         "408eeb7bab699baa4aa58352d1eec911dfc44506"
                     ],
                     "contains": [
-                        "vault_id",
+                        "vault id",
                         "sha1"
                     ]
                 },
@@ -7809,7 +7808,7 @@
                     "order": 0,
                     "data_type": "string",
                     "contains": [
-                        "vault_id",
+                        "vault id",
                         "sha1",
                         "sha256",
                         "md5",
@@ -7845,7 +7844,7 @@
                     "data_path": "action_result.parameter.entity",
                     "data_type": "string",
                     "contains": [
-                        "vault_id",
+                        "vault id",
                         "sha1",
                         "sha256",
                         "md5",
@@ -8016,7 +8015,7 @@
                     "order": 0,
                     "data_type": "string",
                     "contains": [
-                        "vault_id",
+                        "vault id",
                         "sha1",
                         "sha256",
                         "md5",
@@ -8052,7 +8051,7 @@
                     "data_path": "action_result.parameter.entity",
                     "data_type": "string",
                     "contains": [
-                        "vault_id",
+                        "vault id",
                         "sha1",
                         "sha256",
                         "md5",
@@ -9771,7 +9770,7 @@
                     "order": 0,
                     "data_type": "string",
                     "contains": [
-                        "vault_id",
+                        "vault id",
                         "sha1",
                         "sha256",
                         "md5"
@@ -9798,7 +9797,7 @@
                     "data_path": "action_result.parameter.file_hash",
                     "data_type": "string",
                     "contains": [
-                        "vault_id",
+                        "vault id",
                         "sha1",
                         "sha256",
                         "md5"
@@ -10576,7 +10575,7 @@
                     "order": 0,
                     "data_type": "string",
                     "contains": [
-                        "vault_id",
+                        "vault id",
                         "sha1",
                         "sha256",
                         "md5",
@@ -10609,7 +10608,7 @@
                     "data_path": "action_result.parameter.entity",
                     "data_type": "string",
                     "contains": [
-                        "vault_id",
+                        "vault id",
                         "sha1",
                         "sha256",
                         "md5",
@@ -17889,7 +17888,7 @@
                     "order": 0,
                     "data_type": "string",
                     "contains": [
-                        "vault_id",
+                        "vault id",
                         "sha1",
                         "sha256",
                         "md5",
@@ -17935,7 +17934,7 @@
                     "data_path": "action_result.parameter.entity",
                     "data_type": "string",
                     "contains": [
-                        "vault_id",
+                        "vault id",
                         "sha1",
                         "sha256",
                         "md5",
