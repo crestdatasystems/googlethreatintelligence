@@ -1,3 +1,7 @@
+# Integration Overview
+
+Supercharge your Splunk SOAR with Google Threat Intelligence, unifying unparalleled threat analysis directly within your security operations. This app provides context-rich reputation and deep analysis for indicators by fusing three powerful sources: the vast, real-time crowdsourced intelligence of VirusTotal, the frontline breach expertise and actor tracking of Mandiant, and the global threat visibility from Google's own network. Go beyond simple lookups by ingesting curated threat signals from Mandiant-driven Attack Surface Management and Digital Threat Monitoring, along with Google's real-time IOC streams, to automate response with unmatched context and confidence.
+
 # Explanation of Data Ingestion
 
 This integration supports three types of data ingestion: **IOC Stream**, **DTM Alerts**, and **ASM Issues**. If an ingestion type is not selected while configuring asset, data ingestion will not occur. Only one data ingestion type can be configured per asset. To configure multiple data ingestions, set up multiple assets.

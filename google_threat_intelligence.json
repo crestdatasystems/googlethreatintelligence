@@ -1,7 +1,7 @@
 {
     "appid": "a4b0fb6e-70ea-40a6-9adb-6adc55f36f31",
     "name": "Google Threat Intelligence",
-    "description": "Supercharge your Splunk SOAR with Google Threat Intelligence, unifying unparalleled threat analysis directly within your security operations. This app provides context-rich reputation and deep analysis for indicators by fusing three powerful sources: the vast, real-time crowdsourced intelligence of VirusTotal, the frontline breach expertise and actor tracking of Mandiant, and the global threat visibility from Google's own network. Go beyond simple lookups by ingesting curated threat signals from Mandiant-driven Attack Surface Management and Digital Threat Monitoring, along with Google's real-time IOC streams, to automate response with unmatched context and confidence",
+    "description": "Supercharge Splunk SOAR with Google Threat Intelligence by integrating real-time IOCs, breach insights, and threat actor data from VirusTotal, Mandiant, and Google for automated, context-rich responses",
     "type": "threat intel",
     "product_vendor": "Google",
     "logo": "logo_google_threat_intelligence.svg",
