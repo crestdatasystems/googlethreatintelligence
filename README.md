@@ -212,8 +212,6 @@ Ingest data from IOC Stream, DTM Alerts, and ASM Issues
 Type: **ingest** \
 Read only: **True**
 
-Ingest data of IOC Stream, DTM Alerts and ASM Issues.
-
 #### Action Parameters
 
 No parameters are required for this action

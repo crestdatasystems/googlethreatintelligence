@@ -128,8 +128,7 @@
             "read_only": true,
             "parameters": {},
             "output": [],
-            "versions": "EQ(*)",
-            "verbose": "Ingest data of IOC Stream, DTM Alerts and ASM Issues."
+            "versions": "EQ(*)"
         },
         {
             "action": "scan private file",
